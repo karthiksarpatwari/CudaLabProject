@@ -55,9 +55,13 @@ run the appropriate script
     mkdir -p input output
 
 3. Generate Test Images
-    python3 generat_test_images.py 1000
+    python3 generate_test_images.py 1000
 
     or put your own images in the input/ direcotry - expecting them to be input_000.png ...
 
 
 make -f Makefile.image
+./image_processor input output 0
+
+## Acknowledgment
+uses stb_image by Sean Barrett
