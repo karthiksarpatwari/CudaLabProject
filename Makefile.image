@@ -1,0 +1,37 @@
+NVCC = NVCC
+NVCCFLAGS = -std=c++14 -O3
+
+CUDA_ARCH = -arch=sm_75
+INCLUDES = -I. -I$(CUDA_PATH)/INCLUDES
+LDFLAGS = -l$(CUDA_PATH)/lib64 -L$(CUDA_PATH)/lib/x64
+
+RM = rm -f
+MKDIR = mkdir -p $(1)
+
+TARGET = image_processor
+
+SOURCES = image_processor.cu 
+HEADERS = image_processor.h stb_image.h stb_image_write.h 
+
+all: check_headers $(TARGET)
+
+check_headers:
+	@echo "Checking for headers"
+	@test -f stb_image.h || (echo "ERROR - stb_image.h not found")
+	@test -f stb_image_write.h || (echo "ERROR - stb_image_write.h not found")
+
+$(TARGET): $(SOURCES) $(HEADERS)
+	$(NVCC) $(NVCCFLAGS) $(CUDA_ARCH) $(INCLUDES) $(SOURCES) -o $(TARGET) $(LDFLAGS) $(LIBS)
+
+setup-dirs:
+	@mkdir -p input
+	@mkdir -p output
+
+run: $(TARGET)
+	./$(TARGET) input output 0
+
+clean:
+	$(RM) $(TARGET) $(TARGET).exe
+
+clean-all: clean
+	$(RM) stb_image.h stb_image_write.h
